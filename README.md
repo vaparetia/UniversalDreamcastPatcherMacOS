@@ -36,7 +36,7 @@ The latest version of Universal Dreamcast Patcher is [1.8](https://github.com/De
   * If patch utilizes xdelta, the current filename being patched is now displayed in the progress status message, avoiding the appearance of failure when processing large quantity of files.
 * Version 1.3 (2022-05-06)
   * Added xdelta support to reduce patch size, as well as eliminate the potential distribution of whole files containing copyrighted material.
-  * Introduced separate ilding utility for developers to automatically produce patch files, analyzing changes between original retail disc image and modified one.
+  * Introduced separate patch-building utility for developers to automatically produce patch files, analyzing changes between original retail disc image and modified one.
 * Version 1.2 (2022-03-19)
   * Enhanced GDI compatibility and integrity checking.
 * Version 1.1 (2022-03-17)
