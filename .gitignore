@@ -6,3 +6,4 @@ source_builder/obj/
 
 # macOS
 .DS_Store
+*.app
