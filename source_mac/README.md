@@ -41,3 +41,4 @@ Output lands in `out/`. The `tools/` folder (containing `buildgdi` and `convertr
 - `buildgdi` (in `source_mac/tools/`) is a native arm64 binary compiled from [Sappharad/GDIbuilder](https://github.com/Sappharad/GDIbuilder). It handles GDI extraction and rebuild natively.
 - `convertredumptogdi` (in `source_mac/tools/`) is built from `tools_source/convertredumptogdi/` — a .NET 10 CLI port of [RedumpCUE2GDI](https://github.com/AwfulBear/RedumpCUE2GDI). It converts CUE/BIN disc images to GDI format.
 - `xdelta3` is looked up in `tools/` first, then `PATH` — the Homebrew install satisfies this automatically.
+- Patched gdi will be saved to '~/Documents/exported_gdi'
