@@ -41,7 +41,8 @@ public static class Patcher
         string tempExtract = Path.Combine(Path.GetTempPath(), "_UDP_" + guid + "_extract");
         string tempPatch   = Path.Combine(Path.GetTempPath(), "_UDP_" + guid + "_patch");
         string tempData    = Path.Combine(Path.GetTempPath(), "_UDP_" + guid + "_data");
-        string outputDir   = Path.Combine(appBaseFolder, patchFilename + " [GDI]");
+        string exportBase  = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "exported_gdi");
+        string outputDir   = Path.Combine(exportBase, patchFilename + " [GDI]");
 
         try
         {
@@ -291,14 +292,21 @@ public static class Patcher
         string inTools = Path.Combine(toolsDir, name);
         if (File.Exists(inTools)) return inTools;
 
+        // GUI apps on macOS don't inherit the shell PATH, so search it plus
+        // well-known Homebrew locations that won't be in the app's environment.
+        var searchDirs = new List<string>();
+
         string? pathEnv = Environment.GetEnvironmentVariable("PATH");
         if (pathEnv != null)
+            searchDirs.AddRange(pathEnv.Split(':'));
+
+        searchDirs.Add("/opt/homebrew/bin");   // Apple Silicon Homebrew
+        searchDirs.Add("/usr/local/bin");       // Intel Homebrew / manual installs
+
+        foreach (var dir in searchDirs)
         {
-            foreach (var dir in pathEnv.Split(':'))
-            {
-                string candidate = Path.Combine(dir, name);
-                if (File.Exists(candidate)) return candidate;
-            }
+            string candidate = Path.Combine(dir, name);
+            if (File.Exists(candidate)) return candidate;
         }
 
         return null;
