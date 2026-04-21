@@ -32,11 +32,13 @@ dotnet publish source_mac/UniversalDreamcastPatcher.csproj \
   -p:PublishSingleFile=true \
   -c Release \
   -o out
+
+
 ```
 
 Output lands in `out/`. The `tools/` folder (containing `buildgdi`) is copied there automatically.
 
-## Notes
+## notes
 
 - `buildgdi` (in `source_mac/tools/`) is a native arm64 binary compiled from [Sappharad/GDIbuilder](https://github.com/Sappharad/GDIbuilder). It handles GDI extraction and rebuild natively.
 - `xdelta3` is looked up in `tools/` first, then `PATH` — the Homebrew install satisfies this automatically.
