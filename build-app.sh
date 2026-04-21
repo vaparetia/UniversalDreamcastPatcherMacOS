@@ -8,6 +8,20 @@ PROJECT="source_mac/UniversalDreamcastPatcher.csproj"
 PUBLISH_TMP="$(mktemp -d)"
 APP_DIR="${APP_NAME}.app"
 
+echo "Building convertredumptogdi..."
+CUE_TMP="$(mktemp -d)"
+dotnet publish tools_source/convertredumptogdi/convertredumptogdi.csproj \
+  -r osx-arm64 \
+  --self-contained true \
+  -p:PublishSingleFile=true \
+  -p:PublishAot=false \
+  -c Release \
+  -o "$CUE_TMP" \
+  --nologo -v quiet
+cp "$CUE_TMP/convertredumptogdi" source_mac/tools/convertredumptogdi
+chmod +x source_mac/tools/convertredumptogdi
+rm -rf "$CUE_TMP"
+
 echo "Publishing..."
 dotnet publish "$PROJECT" \
   -r osx-arm64 \
@@ -28,6 +42,7 @@ rm -rf "$PUBLISH_TMP"
 
 chmod +x "$APP_DIR/Contents/MacOS/UniversalDreamcastPatcher"
 chmod +x "$APP_DIR/Contents/MacOS/tools/buildgdi"
+chmod +x "$APP_DIR/Contents/MacOS/tools/convertredumptogdi"
 
 # PkgInfo
 printf 'APPL????' > "$APP_DIR/Contents/PkgInfo"

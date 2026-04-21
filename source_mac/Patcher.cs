@@ -20,13 +20,15 @@ public static class Patcher
         var missing = new List<string>();
         if (FindTool("buildgdi", toolsDir) == null)
             missing.Add("buildgdi");
+        if (FindTool("convertredumptogdi", toolsDir) == null)
+            missing.Add("convertredumptogdi");
         if (FindTool("xdelta3", toolsDir) == null)
             missing.Add("xdelta3  (install via: brew install xdelta)");
         return missing;
     }
 
     public static string ApplyPatch(
-        string gdiFile,
+        string sourceFile,
         string patchFile,
         string toolsDir,
         IProgress<PatchProgress> progress,
@@ -35,6 +37,7 @@ public static class Patcher
         string patchFilename = Path.GetFileNameWithoutExtension(patchFile);
         string appBaseFolder = AppContext.BaseDirectory;
         string guid = Guid.NewGuid().ToString();
+        string tempCue     = Path.Combine(Path.GetTempPath(), "_UDP_" + guid + "_cue");
         string tempExtract = Path.Combine(Path.GetTempPath(), "_UDP_" + guid + "_extract");
         string tempPatch   = Path.Combine(Path.GetTempPath(), "_UDP_" + guid + "_patch");
         string tempData    = Path.Combine(Path.GetTempPath(), "_UDP_" + guid + "_data");
@@ -48,6 +51,30 @@ public static class Patcher
 
             Report(progress, 5, "Starting...");
             ct.ThrowIfCancellationRequested();
+
+            // ── Convert CUE to GDI if needed ────────────────────────────────
+            string gdiFile = sourceFile;
+            if (Path.GetExtension(sourceFile).Equals(".cue", StringComparison.OrdinalIgnoreCase))
+            {
+                Report(progress, 8, "Converting CUE to GDI...");
+
+                string convertTool = FindTool("convertredumptogdi", toolsDir)
+                    ?? throw new PatchException("convertredumptogdi is missing from the tools folder.");
+
+                Directory.CreateDirectory(tempCue);
+                var (_, cueErr, cueCode) = RunProcess(
+                    convertTool, $"\"{sourceFile}\" \"{tempCue}\"");
+
+                if (cueCode != 0)
+                    throw new PatchException(
+                        "Failed to convert the CUE disc image to GDI format.\n\n" +
+                        "The source disc image may be malformed or incompatible.");
+
+                gdiFile = Directory.GetFiles(tempCue, "*.gdi").FirstOrDefault()
+                    ?? throw new PatchException(
+                        "CUE conversion produced no GDI file. " +
+                        "The source disc image may be malformed or incompatible.");
+            }
 
             string buildgdiTool = FindTool("buildgdi", toolsDir)
                 ?? throw new PatchException("buildgdi is missing from the tools folder.");
@@ -161,6 +188,7 @@ public static class Patcher
         }
         catch
         {
+            TryDeleteDir(tempCue);
             TryDeleteDir(tempExtract);
             TryDeleteDir(tempPatch);
             TryDeleteDir(tempData);
@@ -168,6 +196,7 @@ public static class Patcher
         }
         finally
         {
+            TryDeleteDir(tempCue);
             TryDeleteDir(tempExtract);
             TryDeleteDir(tempPatch);
             TryDeleteDir(tempData);
