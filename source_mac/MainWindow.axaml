@@ -1,0 +1,81 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="UniversalDreamcastPatcher.MainWindow"
+        Title="Universal Dreamcast Patcher (v1.8)"
+        Width="450"
+        Height="316"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen">
+
+    <StackPanel Margin="8" Spacing="8">
+
+        <!-- Logo image (with LED-off/on toggling in code-behind) -->
+        <Border BorderBrush="#888888" BorderThickness="1">
+            <Image Name="LogoImage"
+                   Source="avares://UniversalDreamcastPatcher/Assets/udp_logo_4.png"
+                   Height="120"
+                   Stretch="Fill"/>
+        </Border>
+
+        <!-- Middle section: buttons and progress share the same fixed-height slot -->
+        <Panel Height="136">
+
+            <!-- Buttons (visible during idle) -->
+            <StackPanel Name="ButtonsPanel" Spacing="8">
+                <Button Name="ButtonSelectGDI"
+                        Height="40"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        Content="Select GDI or CUE"/>
+
+                <!-- Slot 2: SelectPatch and ApplyPatch occupy the same position;
+                     only one is visible at a time -->
+                <Panel Height="40">
+                    <Button Name="ButtonSelectPatch"
+                            Height="40"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Content="Select Patch"
+                            IsVisible="False"/>
+                    <Button Name="ButtonApplyPatch"
+                            Height="40"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Content="Apply Patch"
+                            IsVisible="False"/>
+                </Panel>
+
+                <Button Name="ButtonQuit"
+                        Height="40"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        Content="Quit"/>
+            </StackPanel>
+
+            <!-- Progress section (visible during patching) -->
+            <StackPanel Name="ProgressPanel"
+                        IsVisible="False"
+                        VerticalAlignment="Center"
+                        Spacing="6">
+                <TextBlock Name="ProgressDetails"
+                           TextAlignment="Center"
+                           Text="Starting..."/>
+                <ProgressBar Name="ProgressBar"
+                             Height="24"
+                             Minimum="0"
+                             Maximum="100"
+                             Value="0"/>
+                <TextBlock Name="ProgressPercentage"
+                           TextAlignment="Center"
+                           Text="0%"/>
+            </StackPanel>
+
+        </Panel>
+
+        <!-- Version / credit -->
+        <TextBlock Text="v1.8 - Derek Pascarella (ateam)"
+                   TextAlignment="Center"
+                   Margin="0,4,0,0"/>
+
+    </StackPanel>
+</Window>

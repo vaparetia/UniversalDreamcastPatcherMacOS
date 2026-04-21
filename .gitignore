@@ -1,0 +1,8 @@
+# .NET build output
+source_mac/bin/
+source_mac/obj/
+source_builder/bin/
+source_builder/obj/
+
+# macOS
+.DS_Store
